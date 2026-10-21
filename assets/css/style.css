@@ -82,6 +82,7 @@ b { font-weight: 600; }
   color: #DCE1EA;
   text-wrap: balance;
 }
+.tagline { max-width: 640px; margin: -14px auto 30px; font-size: 17px; line-height: 1.6; color: #C5CBD6; text-wrap: balance; }
 .authors { max-width: 850px; margin: 0 auto; font-size: 16px; line-height: 1.8; color: #C5CBD6; text-wrap: balance; }
 .author { display: inline-block; }
 .authors a { color: var(--text); border-bottom: 1px solid rgba(243, 245, 249, 0.35); }
@@ -391,6 +392,7 @@ pre {
   .hero-content { padding: 72px 20px 96px; }
   .hero h1 { font-size: clamp(40px, 12.8vw, 64px); }
   .subtitle { margin: 18px 0 24px; }
+  .tagline { font-size: 15px; margin: -10px auto 24px; }
   .authors { font-size: 14px; line-height: 1.85; }
   .affils { font-size: 12px; }
   .buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 340px; margin-inline: auto; }

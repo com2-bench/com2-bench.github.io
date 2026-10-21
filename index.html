@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoM²-Bench: Grounding Confusable Movie Moments</title>
+  <meta name="description" content="CoM²-Bench pairs confusable moments in 46 full-length movies, and Agentic Window Search grounds them by checking the evidence that tells them apart.">
+  <meta property="og:title" content="CoM²-Bench: Grounding Confusable Movie Moments">
+  <meta property="og:description" content="A benchmark of verified confusable moment pairs in full-length movies, and a training-free agent that checks the detail that tells them apart.">
+  <meta property="og:url" content="https://com2-bench.github.io/">
+  <meta property="og:image" content="https://com2-bench.github.io/assets/video/hero_poster.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- ============================================================ HERO -->
+<header class="hero" id="top">
+  <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/video/hero_poster.jpg" aria-hidden="true">
+    <source src="assets/video/hero.webm" type="video/webm">
+    <source src="assets/video/hero.mp4" type="video/mp4">
+  </video>
+  <div class="hero-shade"></div>
+  <div class="hero-content">
+    <p class="eyebrow">46 movies · 90.4 hours · 1,507 confusable pairs</p>
+    <h1>CoM<sup>2</sup>-Bench</h1>
+    <p class="subtitle">Grounding Confusable Movie Moments</p>
+    <p class="authors">
+      <span class="author"><a href="https://dongheekim-ai.github.io">Dong-Hee Kim</a><sup>1*</sup>,</span>
+      <span class="author">Seonwoo Choi<sup>1*</sup>,</span>
+      <span class="author">Changbeen Kim<sup>1</sup>,</span>
+      <span class="author">Juyeon Ko<sup>2</sup>,</span>
+      <span class="author">Youngju Choi<sup>2</sup>,</span>
+      <span class="author">Il Hyeon Mun<sup>2</sup>,</span>
+      <span class="author">Hyunwoo J. Kim<sup>3</sup>,</span>
+      <span class="author"><a href="https://utl.korea.ac.kr/team/">Donghyun Kim</a><sup>1</sup></span>
+    </p>
+    <p class="affils"><span class="author"><sup>1</sup>Korea University</span> <span class="author"><sup>2</sup>KT</span> <span class="author"><sup>3</sup>KAIST</span><br><sup>*</sup>Equal contribution</p>
+    <div class="buttons">
+      <a class="btn btn-primary" href="https://arxiv.org/abs/2610.23910">Paper</a>
+      <a class="btn" href="https://huggingface.co/datasets/queez0405/CoM2-Bench">🤗 Dataset</a>
+      <span class="btn disabled" title="Code release coming soon">Code (soon)</span>
+      <a class="btn" href="#bibtex">BibTeX</a>
+    </div>
+  </div>
+  <button class="hero-toggle" type="button" aria-pressed="false" aria-label="Pause background video">Pause</button>
+  <a class="scroll-cue" href="#video" aria-label="Explore the project"><span>Explore</span><span aria-hidden="true">↓</span></a>
+</header>
+
+<nav class="nav" aria-label="Sections">
+  <a href="#video">Video</a>
+  <a href="#overview">Overview</a>
+  <a href="#benchmark">Benchmark</a>
+  <a href="#diagnosis">Diagnosis</a>
+  <a href="#method">Method</a>
+  <a href="#explorer">Trace Explorer</a>
+  <a href="#results">Results</a>
+  <a href="#data">Data</a>
+</nav>
+
+<main>
+
+<!-- ============================================================ VIDEO -->
+<section id="video" aria-label="Video">
+  <div class="video-frame">
+    <video controls preload="none" poster="assets/video/promo_poster.jpg">
+      <source src="assets/video/promo.mp4" type="video/mp4">
+    </video>
+  </div>
+</section>
+
+<!-- ============================================================ OVERVIEW -->
+<section id="overview">
+  <h2>Overview</h2>
+  <p class="lead">Characters, locations, and actions recur throughout a movie, so many of its moments differ only in a single detail. Grounding such a moment in a full-length movie requires resolving that detail rather than matching what it shares with other moments, and existing temporal grounding benchmarks rarely test this.</p>
+  <div class="cards three">
+    <div class="card">
+      <span class="tag">Benchmark</span>
+      <h3>CoM<sup>2</sup>-Bench</h3>
+      <p>3,014 human-verified queries in 46 full movies, organized as confusable pairs that share three attributes and differ in one. PairSuccess counts a pair only when both moments are grounded.</p>
+    </div>
+    <div class="card">
+      <span class="tag">Diagnosis</span>
+      <h3>Retrieval is the bottleneck</h3>
+      <p>In a retrieve-then-localize pipeline, the retriever often picks a moment's confusable partner, because its choice follows the content the two share rather than the detail that tells them apart.</p>
+    </div>
+    <div class="card">
+      <span class="tag">Method</span>
+      <h3>Agentic Window Search</h3>
+      <p>A training-free agent that <b>Decomposes</b> the query, <b>Inspects</b> candidate windows sub-query by sub-query, and <b>Expands</b> a window when evidence is cut off, raising mIoU from 18.5 to 26.8.</p>
+    </div>
+  </div>
+  <figure>
+    <a href="assets/img/figure1.webp" aria-label="View figure at full size"><img src="assets/img/figure1.webp" alt="Two moments in Dumb and Dumber, about 43 minutes apart. Both show Lloyd and Harry walking together; one is on a snowy street at night, the other on a desert highway." loading="lazy"></a>
+    <figcaption>In <i>Dumb and Dumber</i>, two moments about 43 minutes apart share subject, motion and interaction, and differ only in the setting.</figcaption>
+  </figure>
+</section>
+
+<!-- ============================================================ BENCHMARK -->
+<section id="benchmark">
+  <h2>CoM<sup>2</sup>-Bench</h2>
+  <div class="stats">
+    <div><b>46</b><span>full-length movies</span></div>
+    <div><b>90.4 h</b><span>of video</span></div>
+    <div><b>1,507</b><span>confusable pairs</span></div>
+    <div><b>3,014</b><span>verified queries</span></div>
+    <div><b>60.2 s</b><span>avg. moment</span></div>
+    <div><b>35.3 min</b><span>avg. gap within a pair</span></div>
+  </div>
+  <p>Each pair refers to two temporally distant moments in the same movie. The two queries are written in parallel, so only the distinguishing detail separates them. Each query is grounded on its own over the full movie, without its partner as a contrast.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Benchmark</th><th>Scope (avg. min)</th><th>Avg. target (s)</th><th># Queries</th><th>Confusable moments</th><th>Attribute contrast</th><th>Pair metric</th><th>Video access</th></tr></thead>
+      <tbody>
+        <tr><td>Charades-STA</td><td>clip (0.51)</td><td>8.1</td><td>3,720</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td></tr>
+        <tr><td>QVHighlights</td><td>clip (2.50)</td><td>24.6</td><td>1,542</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td></tr>
+        <tr><td>MomentSeeker</td><td>long video (20.03)</td><td>12.8</td><td>1,800</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td></tr>
+        <tr><td>CoMET-Bench</td><td>long video (33.81)</td><td>6.9</td><td>2,789</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td></tr>
+        <tr><td>MAD</td><td>full movie (110.77)</td><td>4.1</td><td>72,000</td><td>△</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td></tr>
+        <tr class="ours"><td>CoM<sup>2</sup>-Bench (Ours)</td><td>full movie (117.8)</td><td>60.2</td><td>3,014</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Confusable moments: ✓ deliberately constructed and verified, △ present but not controlled. Video access: raw frames can be evaluated; CoM<sup>2</sup>-Bench videos come from ALLVB.</p>
+  <figure>
+    <a href="assets/img/data_construction_pipeline.webp" aria-label="View figure at full size"><img src="assets/img/data_construction_pipeline.webp" alt="Construction pipeline: subtitle-anchored clip segmentation, event-level attribute generation, and confusable query pair generation." loading="lazy"></a>
+    <figcaption>Construction: subtitle-anchored clip segmentation, event-level attribute generation, and confusable pair generation with Gemini 3.1 Pro, followed by human verification with blind cross-review and adjudication.</figcaption>
+  </figure>
+  <div class="grid4">
+    <figure><img src="assets/img/stats_position.webp" alt="Ground-truth moments are spread across the whole movie; each of the first nine deciles holds about 9 to 13 percent of queries." loading="lazy"><figcaption>GT position</figcaption></figure>
+    <figure><img src="assets/img/stats_gap.webp" alt="Paired moments are 35.3 minutes apart on average, median 29.7 minutes." loading="lazy"><figcaption>Gap within a pair</figcaption></figure>
+    <figure><img src="assets/img/stats_duration.webp" alt="Moments last 60.2 seconds on average, median 42.5 seconds." loading="lazy"><figcaption>Moment duration</figcaption></figure>
+    <figure><img src="assets/img/stats_words.webp" alt="Queries are 14.9 words long on average." loading="lazy"><figcaption>Query length</figcaption></figure>
+  </div>
+</section>
+
+<!-- ============================================================ DIAGNOSIS -->
+<section id="diagnosis">
+  <h2>Where does grounding break?</h2>
+  <p>We analyze Movie RAG, a retrieve-then-localize pipeline: a retriever picks a 180-second chunk, and a localizer (TimeLens2) predicts the moment inside it.</p>
+  <div class="cards two">
+    <div class="card big-number">
+      <b>25.8 → 77.3</b>
+      <p>R@1@0.3 when TimeLens2 is given the oracle chunk instead of the retrieved one (mIoU 18.5 → 53.8). An oracle localizer on the retrieved chunk reaches only 31.0 mIoU, so retrieval, not localization, limits grounding.</p>
+    </div>
+    <div class="card big-number">
+      <b>34.8 → 43.2</b>
+      <p>R@1@0.7 when the oracle chunk is also extended by oracle expansion: an upper-bound diagnostic showing that fixed chunks cut events at their edges.</p>
+    </div>
+  </div>
+  <div class="grid2">
+    <figure><img src="assets/img/pairwise_confusion.webp" alt="Chance-adjusted accuracy of three retrievers drops sharply when the alternative is the confusable partner rather than a random chunk." loading="lazy"><figcaption>Every retriever loses much of its discrimination against the paired confusable moment.</figcaption></figure>
+    <figure><img src="assets/img/shared_query.webp" alt="Scatter of retrieval margins under the original query versus a shared-content query; most picks are decided by shared content." loading="lazy"><figcaption>Shared content decides most retrieval picks.</figcaption></figure>
+  </div>
+</section>
+
+<!-- ============================================================ METHOD -->
+<section id="method">
+  <h2>Agentic Window Search</h2>
+  <p>AWS sits between the retriever and the localizer, both unchanged. Instead of one similarity score for the whole query, it checks each part of the query against candidate windows.</p>
+  <figure class="narrow"><a href="assets/img/method_overview.webp" aria-label="View figure at full size"><img src="assets/img/method_overview.webp" alt="Movie RAG retrieves a top-1 chunk and localizes; AWS instead runs cascaded inspection with expansion and selection over the top-K chunks, using character memory." loading="lazy"></a></figure>
+  <div class="cards three steps">
+    <div class="card"><span class="step">1</span><h3>Decompose</h3><p>Split the query into attribute-level sub-queries, so the distinguishing detail is checked on its own.</p></div>
+    <div class="card"><span class="step">2</span><h3>Inspect</h3><p>Check top-ranked windows in retrieval order and accept a window only when every sub-query holds. Named characters are matched with a character memory built from the movie's dialogue.</p></div>
+    <div class="card"><span class="step">3</span><h3>Expand</h3><p>When evidence is cut off at a window edge, extend the window within a fixed budget before deciding.</p></div>
+  </div>
+</section>
+
+<!-- ============================================================ TRACE EXPLORER -->
+<section id="explorer">
+  <h2>Trace Explorer</h2>
+  <p>Real traces of AWS (Qwen3.6-27B verifier with character memory) on 24 curated pairs. Sub-queries and the verifier's notes are verbatim from the run; its decisions EMIT, REJECT and EXPAND are shown as accept, reject and expand. A trace ends with the window AWS selects; the unchanged localizer then predicts the final interval inside it, which is not shown here.</p>
+  <div class="ex-controls">
+    <div class="chips" id="ex-filter" role="group" aria-label="Filter examples">
+      <button type="button" data-tag="all" class="on" aria-pressed="true">All</button>
+      <button type="button" data-tag="recovered" aria-pressed="false">Gold chunk recovered</button>
+      <button type="button" data-tag="expanded" aria-pressed="false">Window expanded</button>
+      <button type="button" data-tag="picked_partner" aria-pressed="false">Picked the partner</button>
+    </div>
+    <label class="select"><span>Pair</span><select id="ex-pair"></select></label>
+  </div>
+  <p class="note ex-legend"><b>Gold chunk recovered</b>: the retriever's top-1 was wrong, and AWS selected the gold chunk (the chunk covering the most of the ground truth). <b>Window expanded</b>: AWS extended a window. <b>Picked the partner</b>: AWS selected the confusable partner's moment. A pair can carry several tags, and each query shows its own outcome.</p>
+  <div class="ex" id="ex" aria-live="polite">
+    <div class="ex-loading">Loading traces…</div>
+  </div>
+</section>
+
+<!-- ============================================================ RESULTS -->
+<section id="results">
+  <h2>Results</h2>
+  <p>Holding Movie RAG's retriever and localizer fixed, AWS raises every metric without any training.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Model</th><th>P@0.3</th><th>P@0.5</th><th>P@0.7</th><th>R@1@0.3</th><th>R@1@0.5</th><th>R@1@0.7</th><th>mIoU</th></tr></thead>
+      <tbody>
+        <tr><td>VideoChat-T</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.1</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
+        <tr><td>Time-R1</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.1</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
+        <tr><td>UniTime</td><td>0.5</td><td>0.1</td><td>0.0</td><td>6.0</td><td>3.9</td><td>2.1</td><td>4.8</td></tr>
+        <tr><td>UniversalVTG</td><td>5.8</td><td>2.7</td><td>1.2</td><td>22.1</td><td>14.6</td><td>8.7</td><td>16.3</td></tr>
+        <tr><td>TimeLens</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.4</td><td>0.3</td><td>0.1</td><td>0.3</td></tr>
+        <tr><td>TimeLens2</td><td>1.1</td><td>0.8</td><td>0.3</td><td>10.0</td><td>6.9</td><td>3.9</td><td>7.4</td></tr>
+        <tr><td>Movie RAG</td><td>7.1</td><td>4.1</td><td>2.0</td><td>25.8</td><td>19.1</td><td>12.2</td><td>18.5</td></tr>
+        <tr class="ours"><td>Movie RAG + AWS (4B)</td><td>10.6</td><td>6.4</td><td>3.0</td><td>31.3</td><td>23.6</td><td>15.1</td><td>22.5</td></tr>
+        <tr class="ours"><td>Movie RAG + AWS (27B)</td><td><b>15.0</b></td><td><b>8.8</b></td><td><b>3.7</b></td><td><b>37.0</b></td><td><b>28.2</b></td><td><b>17.9</b></td><td><b>26.8</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">P@θ is PairSuccess@θ: the percentage of pairs whose two queries are both grounded with IoU ≥ θ. Adding a reranker or a fine-tuned retriever before AWS reaches 28.2 and 30.6 mIoU.</p>
+</section>
+
+<!-- ============================================================ DATA -->
+<section id="data">
+  <h2>Dataset</h2>
+  <p>Annotations are on the Hugging Face Hub under CC BY 4.0. Videos and subtitles are not redistributed: obtain them from <a href="https://huggingface.co/datasets/ALLVB/ALLVB">ALLVB</a> under its terms and match them by movie title.</p>
+  <pre><code>from datasets import load_dataset
+ds = load_dataset("queez0405/CoM2-Bench", split="test")</code></pre>
+  <div class="viewer">
+    <iframe src="https://huggingface.co/datasets/queez0405/CoM2-Bench/embed/viewer/default/test" title="CoM2-Bench dataset viewer" loading="lazy"></iframe>
+  </div>
+</section>
+
+<!-- ============================================================ BIBTEX -->
+<section id="bibtex">
+  <h2>BibTeX</h2>
+  <div class="bib">
+    <button id="copy-bib" type="button">Copy</button>
+<pre id="bib-text">@article{kim2026grounding,
+  title   = {Grounding Confusable Movie Moments},
+  author  = {Kim, Dong-Hee and Choi, Seonwoo and Kim, Changbeen and Ko, Juyeon and
+             Choi, Youngju and Mun, Il Hyeon and Kim, Hyunwoo J. and Kim, Donghyun},
+  journal = {arXiv preprint arXiv:2610.23910},
+  year    = {2026}
+}</pre>
+  </div>
+</section>
+
+</main>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

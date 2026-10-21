@@ -82,7 +82,10 @@ b { font-weight: 600; }
   color: #DCE1EA;
   text-wrap: balance;
 }
-.tagline { max-width: 640px; margin: -14px auto 30px; font-size: 17px; line-height: 1.6; color: #C5CBD6; text-wrap: balance; }
+.tagline { max-width: 780px; margin: -14px auto 30px; font-size: 17px; line-height: 1.6; color: #C5CBD6; text-wrap: balance; }
+.nowrap { white-space: nowrap; }
+.tagline-break { display: none; }
+@media (min-width: 760px) { .tagline-break { display: inline; } }
 .authors { max-width: 850px; margin: 0 auto; font-size: 16px; line-height: 1.8; color: #C5CBD6; text-wrap: balance; }
 .author { display: inline-block; }
 .authors a { color: var(--text); border-bottom: 1px solid rgba(243, 245, 249, 0.35); }

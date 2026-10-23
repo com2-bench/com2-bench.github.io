@@ -14,29 +14,37 @@
     reduce.addEventListener('change', e => setPlaying(!e.matches));
   }
 
-  // a wheel step between the hero and the video section jumps to the other one (touch uses CSS snap)
+  // a wheel or key step between the hero and the video section jumps to the other one (touch uses CSS snap)
   const heroEl = document.querySelector('.hero');
   const videoSec = document.getElementById('video');
   let snapping = false;
+  const videoY = () => scrollY + videoSec.getBoundingClientRect().top - 64;  // matches scroll-padding-top
   function snapTo(top) {
     snapping = true;
     scrollTo({ top, behavior: reduce.matches ? 'auto' : 'smooth' });
     setTimeout(() => { snapping = false; }, 900);
   }
+  function step(down, e) {
+    if (snapping) { e.preventDefault(); return; }
+    if (down ? scrollY > heroEl.offsetHeight - 80 : (scrollY <= 0 || scrollY > videoY() + 40)) return;
+    e.preventDefault();
+    snapTo(down ? videoY() : 0);
+  }
+  const KEYS = { ArrowDown: true, PageDown: true, ' ': true, ArrowUp: false, PageUp: false };
   if (heroEl && videoSec) {
     addEventListener('wheel', e => {
       if (reduce.matches || e.ctrlKey || e.deltaY === 0) return;
-      if (snapping) { e.preventDefault(); return; }
-      const down = e.deltaY > 0;
-      const videoY = scrollY + videoSec.getBoundingClientRect().top - 64;  // matches scroll-padding-top
-      if (down ? scrollY > heroEl.offsetHeight - 80 : (scrollY <= 0 || scrollY > videoY + 40)) return;
-      e.preventDefault();
-      snapTo(down ? videoY : 0);
+      step(e.deltaY > 0, e);
     }, { passive: false });
+    addEventListener('keydown', e => {
+      if (reduce.matches || !(e.key in KEYS) || e.altKey || e.ctrlKey || e.metaKey) return;
+      if (e.target.closest('input, select, textarea, button, video, [contenteditable]')) return;
+      step(e.key === ' ' ? !e.shiftKey : KEYS[e.key], e);
+    });
     const cue = document.querySelector('.scroll-cue');
     if (cue) cue.addEventListener('click', e => {
       e.preventDefault();
-      snapTo(scrollY + videoSec.getBoundingClientRect().top - 64);
+      snapTo(videoY());
     });
   }
 

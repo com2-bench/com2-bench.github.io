@@ -111,6 +111,7 @@ b { font-weight: 600; }
 .btn.disabled { color: #929AAA; background: rgba(20, 24, 33, 0.55); border-color: rgba(243, 245, 249, 0.1); cursor: default; }
 .scroll-cue {
   position: absolute;
+  z-index: 2;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);

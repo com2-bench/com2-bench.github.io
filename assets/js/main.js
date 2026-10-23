@@ -14,20 +14,30 @@
     reduce.addEventListener('change', e => setPlaying(!e.matches));
   }
 
-  // one downward wheel in the hero jumps to the video section (touch uses CSS snap)
+  // a wheel step between the hero and the video section jumps to the other one (touch uses CSS snap)
   const heroEl = document.querySelector('.hero');
   const videoSec = document.getElementById('video');
   let snapping = false;
+  function snapTo(top) {
+    snapping = true;
+    scrollTo({ top, behavior: reduce.matches ? 'auto' : 'smooth' });
+    setTimeout(() => { snapping = false; }, 900);
+  }
   if (heroEl && videoSec) {
     addEventListener('wheel', e => {
-      if (reduce.matches || e.ctrlKey || e.deltaY <= 0) return;
+      if (reduce.matches || e.ctrlKey || e.deltaY === 0) return;
       if (snapping) { e.preventDefault(); return; }
-      if (scrollY > heroEl.offsetHeight - 80) return;
+      const down = e.deltaY > 0;
+      const videoY = scrollY + videoSec.getBoundingClientRect().top - 64;  // matches scroll-padding-top
+      if (down ? scrollY > heroEl.offsetHeight - 80 : (scrollY <= 0 || scrollY > videoY + 40)) return;
       e.preventDefault();
-      snapping = true;
-      videoSec.scrollIntoView({ behavior: 'smooth' });
-      setTimeout(() => { snapping = false; }, 900);
+      snapTo(down ? videoY : 0);
     }, { passive: false });
+    const cue = document.querySelector('.scroll-cue');
+    if (cue) cue.addEventListener('click', e => {
+      e.preventDefault();
+      snapTo(scrollY + videoSec.getBoundingClientRect().top - 64);
+    });
   }
 
   // ---------------------------------------------------------------- nav

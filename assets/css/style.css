@@ -82,10 +82,8 @@ b { font-weight: 600; }
   color: #DCE1EA;
   text-wrap: balance;
 }
-.tagline { max-width: 780px; margin: -14px auto 30px; font-size: 17px; line-height: 1.6; color: #C5CBD6; text-wrap: balance; }
+.tagline { max-width: 880px; margin: -14px auto 30px; font-size: 17px; line-height: 1.6; color: #C5CBD6; text-wrap: balance; }
 .nowrap { white-space: nowrap; }
-.tagline-break { display: none; }
-@media (min-width: 760px) { .tagline-break { display: inline; } }
 .authors { max-width: 850px; margin: 0 auto; font-size: 16px; line-height: 1.8; color: #C5CBD6; text-wrap: balance; }
 .author { display: inline-block; }
 .authors a { color: var(--text); border-bottom: 1px solid rgba(243, 245, 249, 0.35); }
@@ -126,21 +124,6 @@ b { font-weight: 600; }
 }
 .scroll-cue span:last-child { font-size: 20px; }
 .scroll-cue:hover { color: var(--text); text-decoration: none; }
-.hero-toggle {
-  position: absolute;
-  right: 18px;
-  bottom: 18px;
-  z-index: 2;
-  background: rgba(20, 24, 33, 0.7);
-  color: var(--dim);
-  border: 1px solid rgba(243, 245, 249, 0.18);
-  border-radius: 8px;
-  padding: 6px 12px;
-  font: 500 12px var(--sans);
-  cursor: pointer;
-  backdrop-filter: blur(8px);
-}
-.hero-toggle:hover { color: var(--text); }
 
 /* ---------------------------------------------------------------- nav */
 .nav {
@@ -399,7 +382,6 @@ pre {
   .authors { font-size: 14px; line-height: 1.85; }
   .affils { font-size: 12px; }
   .buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 340px; margin-inline: auto; }
-  .hero-toggle { right: 12px; bottom: 12px; }
 
   .stats { grid-template-columns: repeat(2, 1fr); }
   .stats div:nth-child(n) { border-left: 0; }
@@ -418,8 +400,13 @@ pre {
   .thumbs { display: flex; overflow-x: auto; scroll-snap-type: x proximity; padding-bottom: 6px; }
   .thumbs figure { flex: 0 0 72%; scroll-snap-align: start; }
 }
+/* touch: hero settles onto the video section (desktop wheel snap is in main.js) */
+@media (pointer: coarse) {
+  html { scroll-snap-type: y proximity; }
+  .hero, #video { scroll-snap-align: start; }
+}
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
+  html { scroll-behavior: auto; scroll-snap-type: none; }
   .btn, .q, .chips button, .nav a { transition: none; }
   .evidence-enter { animation: none; }
 }

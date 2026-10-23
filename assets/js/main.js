@@ -4,21 +4,30 @@
 
   // ---------------------------------------------------------------- hero
   const hero = document.querySelector('.hero-video');
-  const toggle = document.querySelector('.hero-toggle');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   function setPlaying(on) {
     if (!hero) return;
     if (on) hero.play().catch(() => {}); else hero.pause();
-    if (toggle) {
-      toggle.textContent = on ? 'Pause' : 'Play';
-      toggle.setAttribute('aria-pressed', String(!on));
-      toggle.setAttribute('aria-label', on ? 'Pause background video' : 'Play background video');
-    }
   }
   if (hero) {
     if (reduce.matches) { hero.removeAttribute('autoplay'); setPlaying(false); }
     reduce.addEventListener('change', e => setPlaying(!e.matches));
-    if (toggle) toggle.addEventListener('click', () => setPlaying(hero.paused));
+  }
+
+  // one downward wheel in the hero jumps to the video section (touch uses CSS snap)
+  const heroEl = document.querySelector('.hero');
+  const videoSec = document.getElementById('video');
+  let snapping = false;
+  if (heroEl && videoSec) {
+    addEventListener('wheel', e => {
+      if (reduce.matches || e.ctrlKey || e.deltaY <= 0) return;
+      if (snapping) { e.preventDefault(); return; }
+      if (scrollY > heroEl.offsetHeight - 80) return;
+      e.preventDefault();
+      snapping = true;
+      videoSec.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => { snapping = false; }, 900);
+    }, { passive: false });
   }
 
   // ---------------------------------------------------------------- nav

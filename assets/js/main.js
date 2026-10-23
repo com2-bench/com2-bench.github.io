@@ -40,6 +40,17 @@
     });
   }
 
+  // promo starts muted the first time it scrolls into view; controls stay with the viewer after that
+  const promo = document.querySelector('.promo');
+  if (promo && !reduce.matches) {
+    const io = new IntersectionObserver(([en]) => {
+      if (!en.isIntersecting) return;
+      promo.play().catch(() => {});
+      io.disconnect();
+    }, { threshold: 0.6 });
+    io.observe(promo);
+  }
+
   // ---------------------------------------------------------------- nav
   const links = [...document.querySelectorAll('.nav a')];
   const byId = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
